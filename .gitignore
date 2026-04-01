@@ -1,12 +1,12 @@
 # backend specific
-backend/node_modules/
-backend/.env
-backend/.env.*
+Backend/.env
+Backend/node_modules/
+Backend/.env.*
 
 # frontend (future ke liye safe)
-frontend/node_modules/
-frontend/.env
-frontend/.env.*
+Frontend/node_modules/
+Frontend/.env
+Frontend/.env.*
 
 # logs
 *.log
