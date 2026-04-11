@@ -8,7 +8,7 @@ export const applicationRouter = express.Router();
 
 
 applicationRouter.get('/',(req,res,next)=>{
-    res.send('Home page')
+    res.json('Home page')
 })
 
 applicationRouter.use('/api/auth',authRouter)

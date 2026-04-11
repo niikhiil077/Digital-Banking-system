@@ -129,7 +129,7 @@ export const validateInputsController = [
 
 export const registerUserController = asyncHandler(async (req, res, next) => {
 
-    const { name, dob, mobileNo, aadharNo, email, address, branch, accType, guardianRelation, guardianName, password, confirmPassword } = req.body;
+    const { name, dob, mobileNo, aadharNo, email, address, branch, accType, guardianRelation, guardianName, password, confirmPassword } = req.body;   
 
 
     const alreadyExistedUser = await User.findOne({ mobileNo: mobileNo });
@@ -206,6 +206,9 @@ export const registerUserController = asyncHandler(async (req, res, next) => {
     if (!card) {
         throw new Error('Internal error while creating virtual debit card');
     }
+
+    
+    
 
     return res
         .status(201)

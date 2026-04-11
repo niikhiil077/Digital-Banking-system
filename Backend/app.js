@@ -1,6 +1,7 @@
 // IMPORTING MODULES
 
 import express from 'express'
+import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import { requestData } from './middlewares/request.middleware.js';
 import { applicationRouter } from './routes/application.route.js';
@@ -11,8 +12,15 @@ import { applicationRouter } from './routes/application.route.js';
 export const app = express();
 
 
+
+app.use(cors({
+    origin: '*'
+}));
+
+
 // EXPRESS Middlewares 
 
+app.use(cors());
 app.use(requestData);
 app.use(express.urlencoded({extended:true}));
 app.use(express.json())
