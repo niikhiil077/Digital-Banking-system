@@ -31,7 +31,7 @@ export const verifyAccessToken = async (accessToken) => {
 
 export const verifyRefreshToken = async (refreshToken) => {
     if (!refreshToken) {
-        throw new Error("Refrehs token is required")
+        throw new Error("Refresh token is required")
     }
 
     const decoded = await jwt.verify(refreshToken, config.JWT_SECRET);

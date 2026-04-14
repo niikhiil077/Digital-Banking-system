@@ -1,73 +1,71 @@
+
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
 
-    const [errorList, setErrorList] = useState('');
-    const [errormsg, setErrorMsg] = useState('');
+    const [errorList, setErrorList] = useState([]);
+    const [errorMsg, setErrorMsg] = useState("");
 
-
-
+    const navigate = useNavigate();
 
     const formSubmitted = async (e) => {
 
-        e.preventDefault();
         setErrorList([]);
         setErrorMsg('');
 
-        const errors = [];
-        const dob = new Date(e.target.dob.value);
-
-        if (dob > Date.now()) {
-            errors.push({ msg: 'Date cannot be in future' });
-        }
-
-        if (e.target.password.value !== e.target.confirmPassword.value) {
-            errors.push({ msg: 'Password do not  match' });
-        }
-
-        if (errors.length > 0) {
-            setErrorList(errors);
-            return;
-        }
+        e.preventDefault();
 
 
+        console.log('Form submitted');
 
 
         try {
-            const response = await axios.post('/api/auth/register', {
-                name: e.target.name.value,
-                password: e.target.password.value,
-                confirmPassword: e.target.confirmPassword.value,
-                dob: e.target.dob.value,
-                mobileNo: e.target.mobileNo.value,
-                aadharNo: e.target.aadharNo.value,
-                email: e.target.email.value,
-                address: {
-                    houseNo: e.target.houseNo.value,
-                    streetAddress: e.target.streetAddress.value,
-                    city: e.target.city.value,
-                    state: e.target.state.value,
-                    country: e.target.country.value,
-                    pinCode: e.target.pinCode.value
-                },
-                branch: e.target.branch.value,
-                accType: e.target.accType.value
-            });
-            console.log('Registration response', response.data);
-        } catch (error) {
-            console.log(error);
+            const response = await axios.post('/api/auth/register',
+                {
+                    name: e.target.name.value,
+                    password: e.target.password.value,
+                    confirmPassword: e.target.confirmPassword.value,
+                    dob: e.target.dob.value,
+                    mobileNo: e.target.mobileNo.value,
+                    aadharNo: e.target.aadharNo.value,
+                    email: e.target.email.value,
+                    address: {
+                        houseNo: e.target.houseNo.value,
+                        streetAddress: e.target.streetAddress.value,
+                        city: e.target.city.value,
+                        state: e.target.state.value,
+                        country: e.target.country.value,
+                        pinCode: e.target.pinCode.value
+                    },
+                    branch: e.target.branch.value,
+                    accType: e.target.accType.value
 
-            if (error.response.data.errorList) {
-                setErrorList(error.response.data.errorList);
-            } else {
-                setErrorMsg(error.response.data.message)
+                });
+            console.log(response);
+
+            navigate('/signin');
+
+
+
+        } catch (error) {
+            console.log(error.response.data);
+
+            if (error.response.data?.errorList) {
+                setErrorList(error.response.data?.errorList);
             }
 
-            console.log('form submitted');
+            if (error.response.data.message) {
+                setErrorMsg(error.response.data.message);
+            }
+
 
         }
+
+
     }
+
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20 bg-gradient-to-br from-sky-100 via-blue-100 to-indigo-100 relative overflow-hidden">
@@ -109,8 +107,6 @@ const Signup = () => {
                                     required
                                     name="name"
                                     placeholder="Paul phillps"
-                                    pattern="[A-Za-z\s]{2,40}"
-                                    title="Name must be 2–40 characters (only letters & spaces)"
                                     className="w-full px-4 py-2.5 rounded-xl border border-blue-200 bg-white/80 text-sm 
                   focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500
                   hover:border-blue-400 transition-all duration-200"
@@ -141,8 +137,6 @@ const Signup = () => {
                                     required
                                     name="mobileNo"
                                     placeholder="917282XXXX"
-                                    pattern="[6-9][0-9]{9}"
-                                    title="Enter valid 10-digit Indian mobile number"
                                     className="w-full px-4 py-2.5 rounded-xl border border-blue-200 bg-white/80 text-sm 
                   focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500
                   hover:border-blue-400 transition-all duration-200"
@@ -173,8 +167,6 @@ const Signup = () => {
                                     required
                                     name="aadharNo"
                                     placeholder="XXXX XXXX XXXX"
-                                    pattern="\d{12}"
-                                    title="Aadhaar must be exactly 12 digits"
                                     className="w-full px-4 py-2.5 rounded-xl border border-blue-200 bg-white/80 text-sm 
                   focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500
                   hover:border-blue-400 transition-all duration-200"
@@ -252,15 +244,18 @@ const Signup = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
                             {["houseNo", "streetAddress", "city", "state", "country", "pinCode"].map((item, i) => (
+
                                 <input
                                     required
                                     name={item}
                                     key={i}
                                     placeholder={item}
+                                    id={item}
                                     className="w-full px-4 py-2.5 rounded-xl border border-blue-200 bg-white/80 text-sm 
                   focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500
                   hover:border-blue-400 transition-all duration-200"
                                 />
+
                             ))}
 
                         </div>
@@ -275,25 +270,54 @@ const Signup = () => {
                             required
                             name="branch"
                             placeholder="SBI-Dehradun"
-                            minLength={5}
-                            title="Branch name must be at least 5 characters"
                             className="w-full px-4 py-2.5 rounded-xl border border-blue-200 bg-white/80 text-sm 
               focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500
               hover:border-blue-400 transition-all duration-200"
                         />
                     </div>
 
-                    {errorList.length > 0 || errormsg !== '' ?
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                            <ul className="list-disc list-inside">
-                                {errorList.map((val, idx) => (
-                                    <li key={idx}>{val.msg ? val.msg : val}</li>
-                                ))}
-                            </ul>
-                            {errormsg}
-                        </div> : <div></div>
-                    }
 
+                    <div>
+                        {
+                            errorList.length ?
+                                <div className="bg-red-50 border border-red-300 text-red-600 px-4 py-3 rounded-xl text-sm shadow-sm">
+
+                                    <div className="font-semibold mb-1">
+                                        Please fix the following errors:
+                                    </div>
+
+                                    <ul className="list-disc list-inside space-y-1">
+                                        {
+                                            errorList.map((val, idx) => {
+                                                return <li key={idx}>{val.msg}</li>
+                                            })
+                                        }
+                                    </ul>
+
+                                </div>
+                                : <div></div>
+                        }
+                    </div>
+
+                    <div>
+                        {
+                            errorMsg?
+                                <div className="bg-red-50 border border-red-300 text-red-600 px-4 py-3 rounded-xl text-sm shadow-sm">
+
+                                    <div className="font-semibold mb-1">
+                                        Please fix the following errors:
+                                    </div>
+
+                                    <ul className="list-disc list-inside space-y-1">
+                                        {
+                                            errorMsg
+                                        }
+                                    </ul>
+
+                                </div>
+                                : <div></div>
+                        }
+                    </div>
 
 
 
