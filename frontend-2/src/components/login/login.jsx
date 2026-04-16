@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
+import { setAccessToken, setBankDetails, setPersonalDetails } from '../../../context/features/userdata';
+
 
 const SignIn = () => {
 
@@ -9,6 +12,8 @@ const SignIn = () => {
 
   const [errorList, setErrorList] = useState([]);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const formSubmitted = async (e) => {
     setErrorList([]);
@@ -22,8 +27,21 @@ const SignIn = () => {
         password: password
       })
 
-      console.log(response.data);
+      console.log(response.data.data);
+
+      const personalDetails = response.data.data.user;
+      const bankDetails = response.data.data.BankDetails;
+      const accessToken = response.data.data.accessToken;
+      localStorage.setItem("accessToken", accessToken);
+
+
+
+      dispatch(setPersonalDetails(personalDetails));
+      dispatch(setBankDetails(bankDetails));
+      dispatch(setAccessToken(accessToken));  
+
       navigate('/');
+
     } catch (error) {
       const errorArray = [];
       errorArray.push(error.response.data.message);

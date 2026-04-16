@@ -22,7 +22,7 @@ const Navbar = () => {
                         </h4>
                     </Link>
 
-                    <Link to='/account'>
+                    <Link to='/Account'>
                         <h4 className="relative group cursor-pointer">
                             Account
                             <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
