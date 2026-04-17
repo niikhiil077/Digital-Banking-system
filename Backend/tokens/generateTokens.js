@@ -31,7 +31,7 @@ export const generateAccessToken = async (userId) => {
         payloads,
         config.JWT_SECRET,
         {
-            expiresIn: '10m'
+            expiresIn: '30s'
         }
     )
 
