@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../config/axios";
 
 const Signup = () => {
 
@@ -22,7 +23,7 @@ const Signup = () => {
 
 
         try {
-            const response = await axios.post('/api/auth/register',
+            const response = await api.post('/auth/register',
                 {
                     name: e.target.name.value,
                     password: e.target.password.value,

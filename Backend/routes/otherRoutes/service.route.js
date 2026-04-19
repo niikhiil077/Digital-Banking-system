@@ -9,6 +9,7 @@ import { beneficiaryList } from '../../controllers/service/beneficiaryList.js';
 import { removeBeneficiaryController } from '../../controllers/service/removeBeneficiary.js';
 import { searchController } from '../../controllers/service/serach.js';
 import { allTransactionController, userSpecificTransactionController } from '../../controllers/service/transaction.js';
+import { personalDetailsController } from '../../controllers/service/personalDetails.js';
 
 
 export const serviceRouter = express.Router();
@@ -20,6 +21,12 @@ serviceRouter
         userDetailsController
     )
 
+    serviceRouter
+    .route('/personal-details')
+    .get(
+        verifyUserMiddleware,
+        personalDetailsController
+    )
 
 serviceRouter
     .route('/card-status')

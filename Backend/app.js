@@ -14,13 +14,13 @@ export const app = express();
 
 
 app.use(cors({
-    origin: '*'
+    origin: 'http://localhost:5173',
+    credentials:true
 }));
 
 
 // EXPRESS Middlewares 
 
-app.use(cors());
 app.use(requestData);
 app.use(express.urlencoded({extended:true}));
 app.use(express.json())

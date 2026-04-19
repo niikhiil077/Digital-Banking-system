@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import NotLogin from "./notLogin";
 import Loading from "../components/loading";
+import api from "../../config/axios";
 
 const Account = () => {
   const [error, setError] = useState("");
@@ -19,25 +20,24 @@ const Account = () => {
         return;
       }
       setAccessToken(AT);
-      console.log("useeffect1");
+      
     })();
   }, []);
 
   useEffect(() => {
     if (!accessToken) {
-      console.log("accesstoken not found");
       setIsVerified(false);
       return;
     }
 
     (async () => {
       try {
-        const response = await axios.get("/api/service/user-details", {
+        const response = await api.get("/service/user-details", {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log("fetched response");
+        
 
         setAccountDetails(response.data);
         console.log(response.data);
@@ -45,11 +45,11 @@ const Account = () => {
         setLoading(false);
       } catch (err) {
         setError(err?.response?.data?.message || "Internal Errors");
-        console.log("Accesstoken expired", err);
+        console.log(err.response.data.message);
         setIsVerified(false);
         setLoading(false);
       }
-      console.log("useeffect2");
+      
     })();
   }, [accessToken]);
 

@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
 import { setAccessToken, setBankDetails, setPersonalDetails } from '../../../context/features/userdata';
+import api from '../../../config/axios';
+import { setIsLoggedIn } from '../../../context/authentication/authData';
 
 
 const SignIn = () => {
@@ -22,7 +24,7 @@ const SignIn = () => {
 
 
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await api.post('/auth/login', {
         mobileNo: mobileNo,
         password: password
       })
@@ -39,6 +41,7 @@ const SignIn = () => {
       dispatch(setPersonalDetails(personalDetails));
       dispatch(setBankDetails(bankDetails));
       dispatch(setAccessToken(accessToken));  
+      dispatch(setIsLoggedIn(true));
 
       navigate('/');
 
@@ -138,6 +141,8 @@ const SignIn = () => {
           <button className="mt-3 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-semibold shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
             SignIn
           </button>
+
+
 
         </form>
 

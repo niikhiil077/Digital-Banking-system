@@ -1,9 +1,11 @@
 import axios from "axios";
 
-export const api = axios.create({
-  baseURL: "/api",
+const api = axios.create({
+  baseURL: "http://localhost:7007/api",
   withCredentials: true,
 });
+
+//Request Interceptor
 
 api.interceptors.request.use(
   (config) => {
@@ -20,18 +22,17 @@ api.interceptors.request.use(
   },
 );
 
-// response interceptors
-
+//Response interceptor
 
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
+const processQueue = (errors, token) => {
+  failedQueue.forEach((val) => {
+    if (errors) {
+      return val.reject(errors);
     } else {
-      prom.resolve(token);
+      return val.resolve(token);
     }
   });
 
@@ -39,22 +40,30 @@ const processQueue = (error, token = null) => {
 };
 
 api.interceptors.response.use(
+  // if response came return exact response
+
   (response) => response,
+
+  //Errors
 
   async (error) => {
     const originalRequest = error.config;
+    // if some other error no need to handle here in axios configuration
 
-    // ❌ not 401 → just throw error
-    if (!error.response || error.response.status !== 401) {
+    if (
+      !error.response ||
+      (error.response.data.statusCode !== 500 &&
+        error.response.data.message !== "jwt expired")
+    ) {
       return Promise.reject(error);
     }
 
-    // ❌ prevent infinite retry
+    // if retried already then also no need to handle here
+
     if (originalRequest._retry) {
       return Promise.reject(error);
     }
 
-    // 🔄 if refresh already running
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
@@ -64,41 +73,37 @@ api.interceptors.response.use(
       });
     }
 
-    originalRequest._retry = true;
     isRefreshing = true;
+    originalRequest._retry = true;
 
     try {
-      // 🔑 refresh token call
-      const res = await axios.post(
-        "/api/refresh",
-        {},
-        { withCredentials: true }
-      );
+      const response = await axios.get("/api/auth/refresh-token", {
+        withCredentials: true,
+      });
 
-      const newToken = res.data.accessToken;
+      const newToken = response.data.data.accessToken;
 
-      // 💾 save token
       localStorage.setItem("accessToken", newToken);
 
-      // 🔓 unlock queue
       processQueue(null, newToken);
 
-      // 🔁 retry original request
       originalRequest.headers.Authorization = `Bearer ${newToken}`;
 
+      console.log('Token refreshed and request reattempted');
+      
+
       return api(originalRequest);
-    } catch (err) {
-      processQueue(err, null);
+    } catch (error) {
 
-      // 💀 logout user
-      localStorage.removeItem("accessToken");
-      window.location.href = "/login";
+      processQueue(error, null);
 
-      return Promise.reject(err);
-    } finally {
-      isRefreshing = false;
+      localStorage.removeItem('accessToken');
+      return Promise.reject(error);
+    }finally{
+        isRefreshing = false;
     }
-  }
+  },
 );
+
 
 export default api;
