@@ -122,7 +122,7 @@ const Home = () => {
             <p className="text-blue-700 text-sm mb-4">
               Instantly send money anywhere.
             </p>
-            <Link to="/transactions">
+            <Link to="/Bank-Transfer">
               <button className="w-full py-3 rounded-xl text-white font-semibold bg-gradient-to-r from-sky-500 to-indigo-600 shadow-lg hover:scale-[1.03] active:scale-[0.95] transition">
                 Transfer Now
               </button>
