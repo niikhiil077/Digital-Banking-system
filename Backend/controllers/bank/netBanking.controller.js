@@ -128,7 +128,8 @@ export const netBankingController = asyncHandler(async (req, res, next) => {
                         fromAccount: senderAccount.accNo,
                         toAccount: data.recieverAccount.accNo,
                         transactionId: tx._id,
-                        remainingBalance: updatedSenderAcc.balance
+                        remainingBalance: updatedSenderAcc.balance,
+                        amount:data.amount
                     })
             } catch (error) {
 
@@ -217,7 +218,8 @@ export const netBankingController = asyncHandler(async (req, res, next) => {
                         fromAccount: senderAccount.accNo,
                         toAccount: data.recieverAccount.accNo,
                         transactionId: tx._id,
-                        remainingBalance: updatedSenderAcc.balance
+                        remainingBalance: updatedSenderAcc.balance,
+                        amount:data.amount
                     })
             } catch (error) {
 
@@ -306,7 +308,8 @@ export const netBankingController = asyncHandler(async (req, res, next) => {
                         fromAccount: senderAccount.accNo,
                         toAccount: data.recieverAccount.accNo,
                         transactionId: tx._id,
-                        remainingBalance: updatedSenderAcc.balance
+                        remainingBalance: updatedSenderAcc.balance,
+                        amount:data.amount
                     })
             } catch (error) {
 

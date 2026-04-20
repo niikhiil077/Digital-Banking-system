@@ -10,6 +10,8 @@ import Profile from "./pages/profile";
 import SendMoney from "./pages/SendMoney";
 import BankTransfer from "./pages/bankTransfer";
 import TransferSuccess from "./pages/transferSuccess";
+import Credit from "./pages/credit";
+import Debit from "./pages/debit";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/Send-Money" element={<SendMoney />} />
         <Route path="/Bank-Transfer" element={<BankTransfer />} />
         <Route path="/transfer-success" element={<TransferSuccess />} />
+        <Route path="/credit" element={<Credit />} />
+        <Route path="/debit" element={<Debit />} />
       </Routes>
     </>
   );

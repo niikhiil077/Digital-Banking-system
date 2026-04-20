@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import Loading from "../components/loading";
+import { useDispatch, useSelector } from "react-redux";
+import { setBalance } from "../../context/features/userdata";
 
 const Home = () => {
   const [personalDetails, setPersonalDetails] = useState("");
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const balance = useSelector((state) => state.userData.balance);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -16,16 +21,32 @@ const Home = () => {
     if (token) {
       (async () => {
         try {
-          const response = await api.get("/service/personal-details");
-          setPersonalDetails(response.data);
+          const response = await api.get("/service/user-details");
+          setPersonalDetails(response.data.user);
         } catch (error) {
           console.log(error.response.data);
-        } finally{
+        } finally {
           setLoading(false);
         }
       })();
     }
   }, []);
+
+  const balanceClicked = async () => {
+    const response = await api.get("/service/user-details");
+    dispatch(setBalance(response.data.bank.balance));
+    setTimeout(() => {
+      dispatch(setBalance(null));
+    }, 10000);
+  };
+
+  const creditClicked = () => {
+    navigate('/credit');
+  };
+
+  const debitClicked = () => {
+    navigate('/debit');
+  };
 
   if (loading === true) {
     return <Loading />;
@@ -76,18 +97,26 @@ const Home = () => {
                 <p className="text-sm opacity-80">Current Balance</p>
 
                 {/* Eye Icon (UI only) */}
-                <div className="cursor-pointer text-xl opacity-80 hover:opacity-100 transition">
-                  👁️
-                </div>
+                <button onClick={balanceClicked}>
+                  <div className="cursor-pointer text-xl opacity-80 hover:opacity-100 transition">
+                    👁️
+                  </div>
+                </button>
               </div>
 
               {/* Hidden Balance */}
               <h3 className="text-5xl font-bold tracking-tight flex gap-3 items-center">
-                ₹ <p className="font-[500] text-4xl">XXXX</p>
+                ₹{" "}
+                <p className="font-[500] text-4xl">
+                  {balance ? balance : "XXXX"}
+                </p>
               </h3>
 
               {/* Button */}
-              <button className="mt-2 px-4 py-2 text-sm rounded-lg bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition">
+              <button
+                className="mt-2 px-4 py-2 text-sm rounded-lg bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition"
+                onClick={balanceClicked}
+              >
                 Check Balance
               </button>
 
@@ -97,20 +126,25 @@ const Home = () => {
 
           {/* Credit / Debit */}
           <div className="bg-white/50 backdrop-blur-2xl p-6 rounded-3xl border border-white/40 shadow-xl hover:shadow-2xl transition">
-            <h3 className="text-lg font-semibold mb-4 text-blue-900">
-              Money Flow
+            <h3 className="text-lg font-semibold mb-4 text-blue-900 flex gap-4 items-center">
+              Banking features
+              <h5 className="text-gray-400 text-[12px]">
+                (Imaginary, just for fun)
+              </h5>
             </h3>
             <div className="space-y-4">
-              <div className="flex justify-between bg-white/70 p-4 rounded-xl border border-white/40">
+              <button
+                onClick={creditClicked}
+                className="flex justify-between bg-white/70 p-4 rounded-xl border border-white/40 w-full"
+              >
                 <span className="text-blue-700">Credit</span>
-                <span className="text-green-500 font-semibold text-lg">
-                  + ₹0
-                </span>
-              </div>
-              <div className="flex justify-between bg-white/70 p-4 rounded-xl border border-white/40">
+              </button>
+              <button
+                onClick={debitClicked}
+                className="flex justify-between bg-white/70 p-4 rounded-xl border border-white/40 w-full"
+              >
                 <span className="text-blue-700">Debit</span>
-                <span className="text-red-500 font-semibold text-lg">- ₹0</span>
-              </div>
+              </button>
             </div>
           </div>
 

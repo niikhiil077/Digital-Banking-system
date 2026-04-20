@@ -9,6 +9,11 @@ const BankTransfer = () => {
 
   const formSubmitted = async (e) => {
     e.preventDefault();
+
+    setErrorMsg("");
+    setErrors([]);
+
+    
     const form = e.target;
     const formdata = new FormData(e.target);
     const data = Object.fromEntries(formdata.entries());
@@ -23,7 +28,10 @@ const BankTransfer = () => {
       errorList.push("Amount must be in digits");
     }
 
-    setErrors(errorList);
+    if (errorList.length > 0) {
+      setErrors(errorList);
+      return;
+    }
 
     try {
       const response = await api.post("/transaction/banktransfer", {
@@ -39,10 +47,10 @@ const BankTransfer = () => {
       });
     } catch (err) {
       setErrorMsg(err.response.data.message);
+      return;
     }
 
-    setErrorMsg("");
-    setErrors([]);
+    
 
     form.reset();
   };
@@ -145,7 +153,8 @@ const BankTransfer = () => {
             </div>
           </div>
 
-          {errors.length !== 0 || errorMsg !== "" ? (
+          {/* Error List */}
+          {errors.length > 0 && (
             <div className="mt-6 mb-6 bg-red-50/70 backdrop-blur-xl border border-red-200 rounded-2xl p-4 shadow-md animate-fadeIn">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-red-500 text-lg">⚠️</span>
@@ -153,28 +162,29 @@ const BankTransfer = () => {
                   Please fix the following errors
                 </p>
               </div>
-              {/* Error List */}
-              {errors.length !== 0 ? (
-                <ul className="space-y-1 pl-5 list-disc">
-                  {errors.map((err, index) => (
-                    <li
-                      key={index}
-                      className="text-red-600 text-sm leading-relaxed"
-                    >
-                      {err}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <ul className="space-y-1 pl-5 list-disc">
-                  <li className="text-red-600 text-sm leading-relaxed">
-                    {errorMsg}
+
+              <ul className="space-y-1 pl-5 list-disc">
+                {errors.map((err, index) => (
+                  <li key={index} className="text-red-600 text-sm">
+                    {err}
                   </li>
-                </ul>
-              )}
+                ))}
+              </ul>
             </div>
-          ) : (
-            <div></div>
+          )}
+
+          {/* API Error */}
+          {errorMsg && (
+            <div className="mt-6 mb-6 bg-red-50/70 backdrop-blur-xl border border-red-200 rounded-2xl p-4 shadow-md animate-fadeIn">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-red-500 text-lg">⚠️</span>
+                <p className="text-red-700 font-semibold text-sm">Error</p>
+              </div>
+
+              <ul className="space-y-1 pl-5 list-disc">
+                <li className="text-red-600 text-sm">{errorMsg}</li>
+              </ul>
+            </div>
           )}
 
           {/* Beneficiary Toggle */}

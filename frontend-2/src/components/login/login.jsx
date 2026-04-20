@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
-import { setAccessToken, setBankDetails, setPersonalDetails } from '../../../context/features/userdata';
+
 import api from '../../../config/axios';
 import { setIsLoggedIn } from '../../../context/authentication/authData';
 
@@ -31,16 +31,14 @@ const SignIn = () => {
 
       console.log(response.data.data);
 
-      const personalDetails = response.data.data.user;
-      const bankDetails = response.data.data.BankDetails;
+      
       const accessToken = response.data.data.accessToken;
       localStorage.setItem("accessToken", accessToken);
 
 
 
-      dispatch(setPersonalDetails(personalDetails));
-      dispatch(setBankDetails(bankDetails));
-      dispatch(setAccessToken(accessToken));  
+      
+        
       dispatch(setIsLoggedIn(true));
 
       navigate('/');
