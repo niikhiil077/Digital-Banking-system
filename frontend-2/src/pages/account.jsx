@@ -167,9 +167,7 @@ const Account = () => {
     );
   }
 
-  if (loading === false && isVerified === false) {
-    return <NotLogin />;
-  }
+ 
 };
 
 export default Account;

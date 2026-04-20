@@ -41,11 +41,11 @@ const Home = () => {
   };
 
   const creditClicked = () => {
-    navigate('/credit');
+    navigate("/credit");
   };
 
   const debitClicked = () => {
-    navigate('/debit');
+    navigate("/debit");
   };
 
   if (loading === true) {
@@ -135,15 +135,24 @@ const Home = () => {
             <div className="space-y-4">
               <button
                 onClick={creditClicked}
-                className="flex justify-between bg-white/70 p-4 rounded-xl border border-white/40 w-full"
+                className="flex justify-between items-center bg-white/70 p-4 rounded-xl border border-white/40 w-full
+  text-blue-700 font-medium
+  transition-all duration-200 ease-out
+  hover:bg-white hover:shadow-lg hover:scale-[1.02]
+  active:scale-[0.97] active:shadow-md active:bg-white/80"
               >
-                <span className="text-blue-700">Credit</span>
+                <span>Credit</span>
               </button>
+
               <button
                 onClick={debitClicked}
-                className="flex justify-between bg-white/70 p-4 rounded-xl border border-white/40 w-full"
+                className="flex justify-between items-center bg-white/70 p-4 rounded-xl border border-white/40 w-full
+  text-blue-700 font-medium
+  transition-all duration-200 ease-out
+  hover:bg-white hover:shadow-lg hover:scale-[1.02]
+  active:scale-[0.97] active:shadow-md active:bg-white/80"
               >
-                <span className="text-blue-700">Debit</span>
+                <span>Debit</span>
               </button>
             </div>
           </div>

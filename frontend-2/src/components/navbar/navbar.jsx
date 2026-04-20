@@ -7,7 +7,7 @@ import { setIsLoggedIn } from "../../../context/authentication/authData";
 const Navbar = () => {
   const isLoggedIn = useSelector((state) => state.authData.isLoggedIn);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const isLogin = useSelector((state)=>state.authData.isLoggedIn);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -39,7 +39,9 @@ const Navbar = () => {
           Bankify
         </h3>
 
-        {/* Nav Links */}
+{
+isLogin?
+
         <div className="flex items-center gap-8 text-blue-900 font-medium ">
           <Link to="/">
             <h4 className="relative group cursor-pointer">
@@ -64,7 +66,11 @@ const Navbar = () => {
               Profile
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
             </h4>
-          </Link>
+          </Link></div>
+          :
+          <div></div>
+}
+        <div>
           {/* CTA Button */}
           {isLoggedIn ? (
             <button
