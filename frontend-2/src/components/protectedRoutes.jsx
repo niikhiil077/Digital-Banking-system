@@ -6,7 +6,8 @@ import { Outlet } from "react-router-dom";
 
 const ProtectedRoutes = () => {
   const isLogin = useSelector((state) => state.authData.isLoggedIn);
-  return <>{isLogin ? <Outlet /> : <Navigate to="/new-user" />}</>;
+  return isLogin?<Outlet/>:<Navigate to='/signin' replace/>
+
 };
 
 export default ProtectedRoutes;
