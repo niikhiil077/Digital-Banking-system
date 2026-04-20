@@ -1,10 +1,16 @@
 import React, { useState } from "react";
+import api from "../../config/axios";
+import { useNavigate } from "react-router-dom";
 
 const Debit = () => {
   const [errors, setErrors] = useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
 
-  const formSubmitted = (e) => {
+  const formSubmitted = async(e) => {
     e.preventDefault();
+    setErrors([]);
+    setErrorMsg('');
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -24,8 +30,17 @@ const Debit = () => {
       return;
     }
 
-    setErrors([]);
-    console.log("Debited Amount:", amount);
+    try{
+      const response = await api.post('/transaction/debit',{
+        amount:amount
+      })
+      navigate('/transfer-success',{
+        state:response.data
+      })
+    }catch(err){
+      setErrorMsg(err.response.data.message)
+    }
+    
 
     form.reset();
   };
@@ -67,7 +82,14 @@ const Debit = () => {
               </ul>
             </div>
           )}
-
+          {
+            errorMsg!==''?
+            <div className="mb-5 bg-red-50/70 border border-red-200 rounded-xl p-3 text-sm text-red-600 animate-fadeIn">
+              <ul className="list-disc pl-5 space-y-1">
+              {errorMsg}
+              </ul>
+            </div>:<div></div>
+          }
           {/* FORM */}
           <form onSubmit={formSubmitted}>
 
