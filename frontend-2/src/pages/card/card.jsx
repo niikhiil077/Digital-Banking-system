@@ -102,7 +102,7 @@ const Card = () => {
 
           {/* Card Wrap */}
           <div
-            className="lg:fixed sm:sticky lg:mt-[23vh] md:mt-[23vh] w-full max-w-[380px] glow-wrap"
+            className="lg:fixed sm:sticky lg:mt-[18vh] md:mt-[23vh] w-full max-w-[380px] glow-wrap"
             style={{ perspective: 1000 }}
           >
             {/* Animated glow border */}
