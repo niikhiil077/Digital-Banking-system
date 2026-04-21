@@ -81,7 +81,11 @@ api.interceptors.response.use(
         withCredentials: true,
       });
 
-      const newToken = response.data.data.accessToken;
+      const newToken = response?.data?.data?.accessToken;
+
+      if(!newToken){
+        throw new Error('Refreshing token failed by server side internally some error');
+      }
 
       localStorage.setItem("accessToken", newToken);
 
@@ -89,7 +93,7 @@ api.interceptors.response.use(
 
       originalRequest.headers.Authorization = `Bearer ${newToken}`;
 
-      console.log('Token refreshed and request reattempted');
+      console.log('Token refreshed and request reattempted successfully');
       
 
       return api(originalRequest);

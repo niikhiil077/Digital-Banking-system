@@ -33,7 +33,7 @@ export const refreshAccessToken = async (refreshToken) => {
 
     const accessToken = await jwt.sign(payload,
         config.JWT_SECRET, {
-        expiresIn: '30s'
+        expiresIn: '10m'
     }
     )
 
