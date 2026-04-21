@@ -128,9 +128,9 @@ const Home = () => {
           <div className="bg-white/50 backdrop-blur-2xl p-6 rounded-3xl border border-white/40 shadow-xl hover:shadow-2xl transition">
             <h3 className="text-lg font-semibold mb-4 text-blue-900 flex gap-4 items-center">
               Banking features
-              <h5 className="text-gray-400 text-[12px]">
+              <p className="text-gray-400 text-[12px]">
                 (Imaginary, just for fun)
-              </h5>
+              </p>
             </h3>
             <div className="space-y-4">
               <button
@@ -182,7 +182,7 @@ const Home = () => {
           <div className="grid md:grid-cols-4 gap-6">
             {["Card", "Account", "Bank-Transfer", "Transactions"].map(
               (item, i) => (
-                <Link to={item}>
+                <Link to={item} key={i}>
                   {" "}
                   <div
                     key={i}
