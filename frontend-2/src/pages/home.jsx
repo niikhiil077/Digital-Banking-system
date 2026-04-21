@@ -180,7 +180,7 @@ const Home = () => {
           </h3>
 
           <div className="grid md:grid-cols-4 gap-6">
-            {["Send-Money", "Account", "Bank-Transfer", "Transactions"].map(
+            {["Card", "Account", "Bank-Transfer", "Transactions"].map(
               (item, i) => (
                 <Link to={item}>
                   {" "}

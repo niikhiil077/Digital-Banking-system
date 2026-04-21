@@ -53,7 +53,7 @@ const App = () => {
           <Route path="/transfer-success" element={<TransferSuccess />} />
           <Route path="/credit" element={<Credit />} />
           <Route path="/debit" element={<Debit />} />
-          <Route path="/card" element={<Card />} />
+          <Route path="/Card" element={<Card />} />
         </Route>
       </Routes>
     </>
