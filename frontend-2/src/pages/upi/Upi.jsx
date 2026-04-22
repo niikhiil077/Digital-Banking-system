@@ -8,7 +8,11 @@ const Upi = () => {
   const [errors, setErrors] = useState("");
   const [apiError, setApiError] = useState("");
   const [response, setResponse] = useState({});
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [searchResponse, setSearchResponse] = useState(null);
+  const [searchResponseError, setSearchResponseError] = useState(null);
+  const [searchResponsePay,setSearchResponsePay] = useState(null);
+  const [upiId, setUpiId] = useState('');
   const navigate = useNavigate();
   const formSubmitted = async (e) => {
     e.preventDefault();
@@ -26,10 +30,10 @@ const Upi = () => {
       return;
     }
 
-    if(!(Number(data.amount)>0)){
-        setErrors('Amount must be greater than 0')
-        setLoading(false);
-        return;
+    if (!(Number(data.amount) > 0)) {
+      setErrors("Amount must be greater than 0");
+      setLoading(false);
+      return;
     }
 
     try {
@@ -39,28 +43,49 @@ const Upi = () => {
         amount: data.amount,
       });
       setResponse(response.data);
-      setApiError('');
-      setErrors('');
+      setApiError("");
+      setErrors("");
+      setSearchResponse(null);
+      setSearchResponseError(null);
+      setSearchResponsePay(null);
+      setSearch("");
+      setUpiId("");
       e.target.reset();
     } catch (err) {
       console.log(err);
       console.log(err.response.data);
       setApiError(err?.response?.data?.message);
-    }finally{
-        setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
-  
+  const searchFormSubmitted = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setSearchResponse(null);
+    setSearchResponseError(null);
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await api.post("/service/search", {
+        input: data.input,
+      });
+      setSearchResponse(response.data);
+      console.log(response.data);
+    } catch (err) {
+      setSearchResponseError(err.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-    {
-        loading && (
-            <Loading/>
-        )
-    }
-      {Object.keys(response).length!==0 && (
+      {loading && <Loading />}
+      {Object.keys(response).length !== 0 && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-50 px-4">
           {/* Card */}
           <div className="w-full max-w-md bg-white/70 backdrop-blur-2xl border border-white/40 rounded-3xl p-6 shadow-2xl animate-[fadeIn_.4s_ease]">
@@ -139,38 +164,129 @@ const Upi = () => {
         <div className="absolute bottom-[-100px] right-[-100px] w-96 h-96 bg-indigo-500 opacity-40 blur-3xl rounded-full"></div>
 
         {/* Main Container */}
+
         <div className="relative w-full max-w-5xl flex flex-col items-center gap-8">
-          {/* 🔍 Search Bar */}
-          <div className="w-full max-w-xl relative">
-            <input
-              type="text"
-              placeholder="Search UPI ID..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-5 py-3 pr-12 rounded-2xl bg-white/60 backdrop-blur-xl border border-white/40 text-blue-900 outline-none
-            focus:ring-2 focus:ring-sky-400/50 transition shadow-lg"
-            />
-
-            {/* Icon */}
-            {search.length === 0 ? (
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-blue-500 opacity-80">
-                🔍
-              </span>
-            ) : (
-              <button
-                onClick={() => setSearch("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-red-500 hover:scale-110 transition"
+          {/* 🔷 Unified Search + Result Card */}
+          <div className="w-full max-w-xl mx-auto mt-6">
+            <div className="relative rounded-2xl bg-white/60 backdrop-blur-2xl border border-white/40 shadow-xl p-4 transition-all duration-300 hover:shadow-2xl">
+              {/* 🔍 Search Form */}
+              <form
+                onSubmit={(e) => {
+                  searchFormSubmitted(e);
+                }}
+                className="relative"
               >
-                ✖
-              </button>
-            )}
-          </div>
+                <input
+                  type="text"
+                  placeholder="Search User via UPI id or mobile Number..."
+                  value={search}
+                  name="input"
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full px-5 py-3 pr-24 rounded-xl bg-white/70 border border-white/40 text-blue-900 outline-none
+        focus:ring-2 focus:ring-sky-400/50 focus:bg-white/90 transition-all duration-200 shadow-md placeholder:text-blue-400/70"
+                />
 
-          {/* 🔽 Result Placeholder (future use) */}
-          <div className="w-full max-w-xl hidden">
-            {/* yaha future me search result aayega */}
-          </div>
+                {/* Buttons */}
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
+                  {/* Search */}
+                  <button
+                    type="submit"
+                    className="text-lg text-blue-500 opacity-80 hover:scale-110 hover:text-blue-700 transition-all duration-200"
+                  >
+                    🔍
+                  </button>
 
+                  {/* Cancel */}
+                  {search.length !== 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSearch("")}
+                      className="text-lg text-red-500 hover:scale-110 hover:text-red-600 transition-all duration-200"
+                    >
+                      ✖
+                    </button>
+                  )}
+                </div>
+              </form>
+
+              {/* Divider */}
+              {(searchResponseError || searchResponse) && (
+                <div className="my-4 h-[1px] bg-gradient-to-r from-transparent via-blue-200 to-transparent" />
+              )}
+
+              {/* ❌ Error State */}
+              {searchResponseError && (
+                <div
+                  className="flex items-center justify-between px-4 py-3 rounded-xl 
+      bg-red-100/80 border border-red-300 text-red-700 shadow-sm animate-[fadeIn_0.3s_ease]"
+                >
+                  <span>{searchResponseError}</span>
+
+                  {/* Close Error */}
+                  <button
+                    type="button"
+                    onClick={() => setSearchResponseError(null)}
+                    className="ml-3 text-red-500 hover:text-red-700 hover:scale-110 transition text-lg"
+                  >
+                    ✖
+                  </button>
+                </div>
+              )}
+
+              {/* ✅ Success State */}
+              {!searchResponseError && searchResponse && (
+                <div
+                  className="flex items-center justify-between px-4 py-3 rounded-xl 
+      bg-white/80 border border-white/40 shadow-md hover:shadow-lg transition-all duration-300 animate-[fadeIn_0.3s_ease]"
+                >
+                  {/* Left */}
+                  <div className="flex items-center gap-3">
+                    {/* Avatar */}
+                    <div
+                      className="w-11 h-11 flex items-center justify-center rounded-full 
+          bg-gradient-to-br from-sky-500 to-blue-600 text-white font-semibold text-lg shadow-md
+          ring-2 ring-white/40"
+                    >
+                      {searchResponse.recieverName?.charAt(0).toUpperCase()}
+                    </div>
+
+                    {/* Name */}
+                    <div className="flex flex-col leading-tight">
+                      <span className="text-blue-900 font-semibold text-[15px]">
+                        {searchResponse.recieverName}
+                      </span>
+                      <span className="text-xs text-blue-400">
+                        Verified Receiver
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Right Buttons */}
+                  <div className="flex items-center gap-2">
+                    {/* Pay */}
+                    <button
+                      className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 text-white text-sm font-semibold 
+            shadow-md hover:scale-105 hover:shadow-xl active:scale-95 transition-all duration-200"
+                      onClick={()=>{
+                        setUpiId(searchResponse.recieverUPIid);
+                      }}
+                    >
+                      Pay
+                    </button>
+
+                    {/* Close Result */}
+                    <button
+                      type="button"
+                      onClick={() => setSearchResponse(null)}
+                      className="text-gray-400 hover:text-red-500 hover:scale-110 transition text-lg"
+                    >
+                      ✖
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
           {/* Main Content */}
           <div className="w-full grid md:grid-cols-2 gap-8 items-center">
             {/* LEFT INFO */}
@@ -232,6 +348,8 @@ const Upi = () => {
                     type="text"
                     name="recieverUPIid"
                     placeholder="example@okaxis"
+                    value={upiId}
+                    onChange={(e)=>{setUpiId(e.target.value)}}
                     required
                     className="w-full px-4 py-2.5 rounded-xl bg-white/70 border border-white/40 text-blue-900 outline-none
                   focus:ring-2 focus:ring-sky-400/50 transition"
