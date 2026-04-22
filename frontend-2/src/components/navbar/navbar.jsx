@@ -61,9 +61,9 @@ isLogin?
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
             </h4>
           </Link>
-          <Link to="/profile">
+          <Link to="/upi">
             <h4 className="relative group cursor-pointer">
-              Profile
+              UPI
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
             </h4>
           </Link></div>

@@ -6,7 +6,6 @@ import Signup from "./components/signup/signup";
 import Home from "./pages/home";
 import Account from "./pages/account";
 import Transaction from "./pages/transaction";
-import Profile from "./pages/profile";
 import SendMoney from "./pages/SendMoney";
 import BankTransfer from "./pages/bankTransfer";
 import TransferSuccess from "./pages/transferSuccess";
@@ -18,6 +17,7 @@ import Card from "./pages/card/card";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsLoggedIn } from "../context/authentication/authData";
 import Loading from "./components/loading";
+import Upi from "./pages/upi/Upi";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const App = () => {
 
   // Show nothing while checking for token on page load/refresh
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (
@@ -47,7 +47,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/account" element={<Account />} />
           <Route path="/transactions" element={<Transaction />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/upi" element={<Upi />} />
           <Route path="/Send-Money" element={<SendMoney />} />
           <Route path="/Bank-Transfer" element={<BankTransfer />} />
           <Route path="/transfer-success" element={<TransferSuccess />} />
