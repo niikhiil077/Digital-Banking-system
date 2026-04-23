@@ -1,8 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setbeneficiaryList, setShowBeneficiaries } from "../../../context/beneficiary/beneficiary";
+import {
+  setbeneficiaryList,
+  setShowBeneficiaries,
+} from "../../../context/beneficiary/beneficiary";
+import { useNavigate } from "react-router-dom";
 
-const BeneficiaryList = ({setLoading}) => {
+const BeneficiaryList = ({ setLoading }) => {
+  const navigate = useNavigate();
   const showBeneficiaries = useSelector(
     (state) => state.beneficiaryData.showBeneficiaries,
   );
@@ -56,6 +61,14 @@ const BeneficiaryList = ({setLoading}) => {
 
                     {/* Pay Button (same feel) */}
                     <button
+                      onClick={() => {
+                        navigate("/beneficiary", {
+                          state: {
+                            bankId: item.recieverBankId,
+                            recieverName: item.recieverName,
+                          },
+                        });
+                      }}
                       className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold text-white 
                 bg-gradient-to-r from-indigo-600 to-purple-600 
                 hover:from-indigo-700 hover:to-purple-700 
@@ -92,7 +105,6 @@ const BeneficiaryList = ({setLoading}) => {
                 <h2 className="text-lg font-semibold text-gray-800 mb-1">
                   No Beneficiaries Found
                 </h2>
-                
               </div>
             )}
           </div>

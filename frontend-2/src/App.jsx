@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsLoggedIn } from "../context/authentication/authData";
 import Loading from "./components/loading";
 import Upi from "./pages/upi/Upi";
+import BeneficiaryPay from "./pages/beneficiary/BeneficiaryPay";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/credit" element={<Credit />} />
           <Route path="/debit" element={<Debit />} />
           <Route path="/Card" element={<Card />} />
+          <Route path="/beneficiary" element={<BeneficiaryPay />} />
         </Route>
       </Routes>
     </>
