@@ -23,6 +23,8 @@ import {
 } from "../../controllers/service/transaction.js";
 import { personalDetailsController } from "../../controllers/service/personalDetails.js";
 import { getCardDetailsController } from "../../controllers/service/getCardDetails.js";
+import { getAllTransaction } from "../../utils/Application-utilities/Transaction.js";
+import { getAllTransactionController } from "../../controllers/service/getAllTransaction.js";
 
 export const serviceRouter = express.Router();
 
@@ -65,6 +67,10 @@ serviceRouter
   .post(verifyUserMiddleware, removeBeneficiaryController);
 
 serviceRouter.route("/search").post(verifyUserMiddleware, searchController);
+
+serviceRouter
+.route('/getAllTransaction')
+.get(verifyUserMiddleware, getAllTransactionController);
 
 serviceRouter
   .route("/getTransaction")
