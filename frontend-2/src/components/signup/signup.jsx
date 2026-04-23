@@ -44,7 +44,8 @@ const Signup = () => {
                     accType: e.target.accType.value
 
                 });
-            console.log(response);
+            
+            alert('Account created successfully...now SignIN');
 
             navigate('/signin');
 
