@@ -5,8 +5,10 @@ import {
   setShowBeneficiaries,
 } from "../../../context/beneficiary/beneficiary";
 import { useNavigate } from "react-router-dom";
+import api from "../../../config/axios";
 
 const BeneficiaryList = ({ setLoading }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const showBeneficiaries = useSelector(
     (state) => state.beneficiaryData.showBeneficiaries,
@@ -14,7 +16,22 @@ const BeneficiaryList = ({ setLoading }) => {
   const beneficiaryList = useSelector(
     (state) => state.beneficiaryData.beneficiaryList,
   );
-  const dispatch = useDispatch();
+  const removeBeneficiary = async (bankId) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/service/removeBeneficiary", {
+        bankId: bankId,
+      });
+      const newList = beneficiaryList.filter((val) => {
+        return val.recieverBankId !== bankId;
+      });
+      dispatch(setbeneficiaryList(newList));
+    } catch (err) {
+      alert(err?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       {/* Beneficiary List Section */}
@@ -59,37 +76,48 @@ const BeneficiaryList = ({ setLoading }) => {
                       </div>
                     </div>
 
-                    {/* Pay Button (same feel) */}
-                    <button
-                      onClick={() => {
-                        navigate("/beneficiary", {
-                          state: {
-                            bankId: item.recieverBankId,
-                            recieverName: item.recieverName,
-                          },
-                        });
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold text-white 
-                bg-gradient-to-r from-indigo-600 to-purple-600 
-                hover:from-indigo-700 hover:to-purple-700 
-                active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          removeBeneficiary(item.recieverBankId);
+                        }}
+                        className="px-4 py-2 rounded-xl text-[13px] font-semibold text-white bg-red-500 hover:bg-red-600 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                      Pay
-                    </button>
+                        Remove beneficiary
+                      </button>
+
+                      {/* Pay Button (same feel) */}
+                      <button
+                        onClick={() => {
+                          navigate("/beneficiary", {
+                            state: {
+                              bankId: item.recieverBankId,
+                              recieverName: item.recieverName,
+                            },
+                          });
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold text-white 
+                  bg-gradient-to-r from-indigo-600 to-purple-600 
+                  hover:from-indigo-700 hover:to-purple-700 
+                  active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
+                        </svg>
+                        Pay
+                      </button>
+                    </div>
 
                     {/* Hover Glow (same as before) */}
                     <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none bg-gradient-to-r from-indigo-500/10 to-purple-500/10"></div>

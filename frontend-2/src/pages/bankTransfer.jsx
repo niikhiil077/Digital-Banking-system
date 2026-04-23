@@ -7,6 +7,7 @@ import Loading from "../components/loading";
 
 const BankTransfer = () => {
   const [errors, setErrors] = useState([]);
+  const [reset,setReset] = useState(1);
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const BankTransfer = () => {
       return;
     } finally {
       setLoading(false);
+      setReset(prev=>prev+1);
     }
 
     form.reset();
