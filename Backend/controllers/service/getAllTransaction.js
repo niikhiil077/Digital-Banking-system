@@ -5,42 +5,46 @@ import { errorResponse } from "../../utils/responseHandling-&-AsyncHandling/erro
 export const getAllTransactionController = asyncHandler(
   async (req, res, next) => {
     const userId = req.user.userId;
-    const users = await Transaction.aggregate([
-      {
-        $addFields: {
-          fromAccount: { $toObjectId: "$fromAccount" },
-        },
-      },
-      {
-        $group: {
-          _id: "$userId",
-          fromAccount: { $first: "$fromAccount" },
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "_id",
-          foreignField: "_id",
-          as: "user",
-        },
-      },
-      {
-        $lookup: {
-          from: "banks",
-          localField: "fromAccount",
-          foreignField: "_id",
-          as: "account",
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          name: { $arrayElemAt: ["$user.name", 0] },
-          accountNumber: { $arrayElemAt: ["$account.accNo", 0] }, // 🔥 FIX
-        },
-      },
-    ]);
+   const users = await Transaction.aggregate([
+  {
+    $addFields: {
+      toAccount: { $toObjectId: "$toAccount" }, // receiver account
+    },
+  },
+  {
+    $group: {
+      _id: "$toAccount",
+    },
+  },
+  {
+    $lookup: {
+      from: "banks",
+      localField: "_id",
+      foreignField: "_id",
+      as: "account",
+    },
+  },
+  {
+    $project: {
+      account: { $arrayElemAt: ["$account", 0] },
+    },
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "account.accountHolderId",
+      foreignField: "_id",
+      as: "user",
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      name: { $arrayElemAt: ["$user.name", 0] },
+      accountNumber: "$account.accNo",
+    },
+  },
+]);
     if (!users) {
       throw new Error(
         new errorResponse(
