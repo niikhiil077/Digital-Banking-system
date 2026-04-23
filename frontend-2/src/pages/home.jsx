@@ -210,10 +210,10 @@ const Home = () => {
               <div className="flex justify-between items-center bg-white/70 p-4 rounded-xl border border-white/40 hover:scale-[1.01] transition">
                 <div>
                   <p className="font-semibold text-blue-900">
-                    No transactions yet
+                    See Transactions
                   </p>
                   <p className="text-xs text-blue-600">
-                    Start using your account
+                    will navigate to transaction page 
                   </p>
                 </div>
                 <span className="text-blue-400">—</span>

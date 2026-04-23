@@ -19,6 +19,7 @@ import { setIsLoggedIn } from "../context/authentication/authData";
 import Loading from "./components/loading";
 import Upi from "./pages/upi/Upi";
 import BeneficiaryPay from "./pages/beneficiary/BeneficiaryPay";
+import UserTransaction from "./pages/getUserTransaction";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -56,6 +57,7 @@ const App = () => {
           <Route path="/debit" element={<Debit />} />
           <Route path="/Card" element={<Card />} />
           <Route path="/beneficiary" element={<BeneficiaryPay />} />
+          <Route path="/transaction/:user" element={<UserTransaction />} />
         </Route>
       </Routes>
     </>

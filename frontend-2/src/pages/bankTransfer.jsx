@@ -7,7 +7,7 @@ import Loading from "../components/loading";
 
 const BankTransfer = () => {
   const [errors, setErrors] = useState([]);
-  const [reset,setReset] = useState(1);
+  const [reset, setReset] = useState(1);
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -48,6 +48,10 @@ const BankTransfer = () => {
         addBeneficiary: data.addBeneficiary === "on",
       });
 
+      if (response.data.beneficiaryMessage) {
+        alert(response.data.beneficiaryMessage);
+      }
+
       navigate("/transfer-success", {
         state: response.data,
       });
@@ -56,7 +60,7 @@ const BankTransfer = () => {
       return;
     } finally {
       setLoading(false);
-      setReset(prev=>prev+1);
+      setReset((prev) => prev + 1);
     }
 
     form.reset();

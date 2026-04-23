@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import api from "../../config/axios";
 import Loading from "../components/loading";
+import { useNavigate } from "react-router-dom";
 
 const Transaction = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -22,9 +24,11 @@ const Transaction = () => {
     fetchTransactions();
   }, []);
 
-  const btnClicked = (accNo)=>{
-
-  }
+  const btnClicked = (accNo,name) => {
+    navigate(`/transaction/${name}`, {
+      state: accNo,
+    });
+  };
 
   if (loading) {
     return <Loading />;
@@ -78,7 +82,7 @@ const Transaction = () => {
                 bg-gradient-to-r from-sky-500 to-indigo-600
                 shadow-md hover:scale-[1.05] active:scale-[0.95] transition"
                 onClick={() => {
-                  btnClicked(user.acc)
+                  btnClicked(user.accountNumber,user.name);
                 }}
               >
                 View History →
